@@ -1,5 +1,5 @@
 # tp-ia
-Implementation de l'algorithme A* et Negamax sous une forme générique et efficace en
+Implementation de l'algorithme A* et Negamax sous une forme générique et efficace en PROLOG
 # A* :
 L’algorithmedoit réutilisable tout type de problème modélisable comme la recherche d’un chemin optimal dans un graphe d’états,à condition de définir dans un fichier dédié :
 * l'état initial
