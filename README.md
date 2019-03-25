@@ -7,6 +7,7 @@ L’algorithmedoit réutilisable tout type de problème modélisable comme la re
 * les actions possibles pour changer d'état
 * le coût de chaque action
 * l'heuristique estimant la distance d'un état donnéà l'état final.
+
 Les deux heuristiques implémentés :
 * Le nb de pièces mal placéesdans la position courante par rapport à la situation désirée
 * La somme des distances de Manhattande chaque pièce depuis sa position courante vers la position désirée.
