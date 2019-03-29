@@ -93,7 +93,8 @@ colonne(C,M) :- transpose(M,MT), ligne(C,MT).
 		R . . . . . . . I
 	*/
 		
-diagonale(D, M) :- premiere_diag(1,D,M), seconde_diag(M,D).
+diagonale(D, M) :- premiere_diag(1,D,M).
+diagonale(D,M):- seconde_diag(D,M).
 
 
 premiere_diag(_,[],[]).
@@ -103,11 +104,15 @@ premiere_diag(K,[E|D],[Ligne|M]) :-
 	premiere_diag(K1,D,M).
 
 % definition de la seconde diagonale A COMPLETER
-seconde_diag(In,Out) :- 
+seconde_diag(Out,In) :- 
         reverse(In, In2),
         foldl(extract_element, In2, [], Out).
 
-
+extract_element(L, L1, [H|L1]):- 
+                length(L1, N1), 
+                length(L2, N1), 
+                append(L2, [H|_], L).
+                	
 	/***********************************
 	 DEFINITION D'UN ALIGNEMENT POSSIBLE
 	 POUR UN JOUEUR DONNE
