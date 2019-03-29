@@ -47,7 +47,7 @@ adversaire(o,x).
 	 continuer � jouer (quel qu'il soit).
 	 ****************************************************/
 
-%situation_terminale(Joueur, Situation) :- ????   
+situation_terminale(_Joueur, Situation) :- ground(Situation).
 
 /***************************
  DEFINITIONS D'UN ALIGNEMENT
@@ -61,8 +61,6 @@ alignement(D, Matrix) :- diagonale(D,Matrix).
 	 DEFINIR ICI chaque type d'alignement maximal 
  	 existant dans une matrice carree NxN.
 	 ********************************************/
-
-/*ajout de transpose et first column pour pouvoir récupérer les colonnes*/
 transpose([[]|_], []) :- !.
 transpose([[I|Is]|Rs], [Col|MT]) :-
     first_column([[I|Is]|Rs], Col, [Is|NRs]),
@@ -73,8 +71,7 @@ first_column([[]|_], [], []).
 first_column([[I|Is]|Rs], [I|Col], [Is|Rest]) :-
     first_column(Rs, Col, Rest).
 
-%Erreur précédente : iversion matrice-résultat dans le nth1
-ligne(L, M) :- nth1(_,M,L).  
+ligne(L, M) :-  nth1(_,M,L).
  
 colonne(C,M) :- transpose(M,MT), ligne(C,MT).
 
@@ -96,12 +93,12 @@ colonne(C,M) :- transpose(M,MT), ligne(C,MT).
 diagonale(D, M) :- premiere_diag(1,D,M).
 diagonale(D,M):- seconde_diag(D,M).
 
-
 premiere_diag(_,[],[]).
 premiere_diag(K,[E|D],[Ligne|M]) :-
 	nth1(K,Ligne,E),
 	K1 is K+1,
 	premiere_diag(K1,D,M).
+
 
 % definition de la seconde diagonale A COMPLETER
 seconde_diag(Out,In) :- 
@@ -112,7 +109,9 @@ extract_element(L, L1, [H|L1]):-
                 length(L1, N1), 
                 length(L2, N1), 
                 append(L2, [H|_], L).
-                	
+
+
+
 	/***********************************
 	 DEFINITION D'UN ALIGNEMENT POSSIBLE
 	 POUR UN JOUEUR DONNE
@@ -126,10 +125,8 @@ possible([   ], _).
 	de chaque emplacement de la liste, mais il ne
 	faut pas realiser l'unification.
 	*/
-
-% A FAIRE 
-unifiable([X,X|T],J) :- unifiable(T,J).
-unifiable([]).
+unifiable(X,_) :- var(X).
+unifiable(X,J) :- not(var(X)), J == X.
 
 	/**********************************
 	 DEFINITION D'UN ALIGNEMENT GAGNANT
@@ -145,22 +142,26 @@ pour son adversaire.
 
 % A FAIRE
 
-%alignement_gagnant(Ali, J) :- 
+alignement_gagnant(Ali, J) :- ground(Ali), possible(Ali,J).
 
-%alignement_perdant(Ali, J) :- 
+alignement_perdant(Ali, J) :- adversaire(J,A), alignement_gagnant(Ali, A).
 
 
 	/******************************
 	DEFINITION D'UN ETAT SUCCESSEUR
 	*******************************/
 
-     /*Il faut definir quelle op�ration subitune matrice M representant la situation courante
+     /*Il faut definir quelle op�ration subit une matrice M representant la situation courante
 	lorsqu'un joueur J joue en coordonnees [L,C]
      */	
 
 % A FAIRE
-% successeur(J,Etat,[L,C]) :- ? ? ? ?  
 
+successeur(J,Etat,[L,C]) :- 
+	nth1(L,Etat,Lig),
+	nth1(C,Lig,Case),
+	var(Case),
+	Case = J.
 	/**************************************
    	 EVALUATION HEURISTIQUE D'UNE SITUATION
   	 **************************************/
@@ -190,7 +191,14 @@ heuristique(J,Situation,H) :-		% cas 2
 % c-a-d si Situation n'est ni perdante ni gagnante.
 
 % A FAIRE 					cas 3
-% heuristique(J,Situation,H) :- ? ? ? ?
+heuristique(J,Situation,H) :- 
+	findall(Ali, alignement(Ali,Situation), ListAli),	
+	findall(Ali, (member(Ali,ListAli), possible(Ali,J)), List_player),
+	length(List_player,H_player),
+	adversaire(J,A),
+	findall(Ali, (member(Ali,ListAli), possible(Ali,A)), List_opponent),
+	length(List_opponent,H_opponent),
+	H is H_player - H_opponent.
 
 
 
