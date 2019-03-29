@@ -62,12 +62,19 @@ alignement(D, Matrix) :- diagonale(D,Matrix).
  	 existant dans une matrice carree NxN.
 	 ********************************************/
 
+/*ajout de transpose et first column pour pouvoir récupérer les colonnes*/
 transpose([[]|_], []) :- !.
 transpose([[I|Is]|Rs], [Col|MT]) :-
     first_column([[I|Is]|Rs], Col, [Is|NRs]),
     transpose([Is|NRs], MT).
 
-ligne(L, M) :- nth1(_,L,M).  
+first_column([], [], []).
+first_column([[]|_], [], []).
+first_column([[I|Is]|Rs], [I|Col], [Is|Rest]) :-
+    first_column(Rs, Col, Rest).
+
+%Erreur précédente : iversion matrice-résultat dans le nth1
+ligne(L, M) :- nth1(_,M,L).  
  
 colonne(C,M) :- transpose(M,MT), ligne(C,MT).
 
@@ -133,9 +140,9 @@ pour son adversaire.
 
 % A FAIRE
 
-alignement_gagnant(Ali, J) :- 
+%alignement_gagnant(Ali, J) :- 
 
-alignement_perdant(Ali, J) :- 
+%alignement_perdant(Ali, J) :- 
 
 
 	/******************************
