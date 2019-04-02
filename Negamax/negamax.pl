@@ -1,4 +1,4 @@
-	/*
+/*
 	Ce programme met en oeuvre l'algorithme Minmax (avec convention
 	negamax) et l'illustre sur le jeu du TicTacToe (morpion 3x3)
 	*/
@@ -56,6 +56,15 @@
 A FAIRE : ECRIRE ici les clauses de negamax/5
 .....................................
 	*/
+/*Cas 1 profondeur maximal atteinte*/
+negamax(J, Etat, Pmax, Pmax, [_, Val]):- heuristique(J,Etat,Val).
+/**/		
+negamax(J, Etat, P, Pmax, [_, Val]):- situation_terminale(Etat), heuristique(J,Etat,Val). 
+	
+negamax(J, Etat, P, Pmax, [Coup, Val]):- 
+	successeurs(J, Etat, Succ),
+	loop_negamax(J, P, Pmax, Succ, ListCouple), 
+	meilleur(ListeCouple, [Coupe, Val]).
 
 
 	/*******************************************
@@ -87,11 +96,14 @@ successeurs(J,Etat,Succ) :-
 	a partir de la liste des couples [Coup, Situation_Suivante]
 	*/
 
-loop_negamax(_,_, _  ,[],                []).
+loop_negamax(_, _, _ , [],[]).
+%loop_negamax(Joueur (x ou o dans notre exemple), Profondeur actuelle, Profondeur à ne pas dépasser, [[Coup qui amène à -> , une Situation suivante]|reste de la liste de Successeurs], La liste des coups et de sa valeur associée)
 loop_negamax(J,P,Pmax,[[Coup,Suiv]|Succ],[[Coup,Vsuiv]|Reste_Couples]) :-
+% loop pour construire l'arbre à partir de ses feuilles jusqu'au sommet%
 	loop_negamax(J,P,Pmax,Succ,Reste_Couples),
 	adversaire(J,A),
 	Pnew is P+1,
+% negamax à partir de l'état suivant pour l'adversaire
 	negamax(A,Suiv,Pnew,Pmax, [_,Vsuiv]).
 
 	/*
@@ -119,14 +131,29 @@ A FAIRE : commenter chaque litteral de la 2eme clause de loop_negamax/5,
 A FAIRE : ECRIRE ici les clauses de meilleur/2
 	*/
 
+meilleur([X],[X]).
 
+meilleur([[C,V],[CC,VV]|L],R):-
+ 	( L \= [] -> 
+		( V < VV ->
+			meilleur([[C,V]|L],R)
+		;	 
+			meilleur([[CC,VV]|L],R)
+		)
+	;	
+		( V < VV ->
+			R = [C,V]
+		;	 
+			R = [CC,VV]
+		)
+	).
 
 	/******************
   	PROGRAMME PRINCIPAL
   	*******************/
 
 main(B,V, Pmax) :-
-
+	
 	true.        
 
 
@@ -136,4 +163,3 @@ A FAIRE :
 	Pmax = 1, 2, 3, 4 ...
 	Commentez les résultats obtenus.
 	*/
-
