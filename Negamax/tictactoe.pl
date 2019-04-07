@@ -94,21 +94,31 @@ diagonale(D, M) :- premiere_diag(1,D,M).
 diagonale(D,M):- seconde_diag(D,M).
 
 premiere_diag(_,[],[]).
-premiere_diag(K,[E|D],[Ligne|M]) :-
+premiere_diag(K,[E|D],[Ligne|M]) :- %(_,diago,matrice)
 	nth1(K,Ligne,E),
 	K1 is K+1,
 	premiere_diag(K1,D,M).
 
 
 % definition de la seconde diagonale A COMPLETER
-seconde_diag(Out,In) :- 
-        reverse(In, In2),
-        foldl(extract_element, In2, [], Out).
+%reverse : 
+%[a,b,c]		[g,h,i]
+%[d,e,f]     devient	[d,e,f]
+%[g,h,i]		[a,b,c]
 
-extract_element(L, L1, [H|L1]):- 
-                length(L1, N1), 
-                length(L2, N1), 
-                append(L2, [H|_], L).
+seconde_diag(Out,In) :-
+        reverse(In, In2),
+        premiere_diag(1,Out,In2).
+
+
+%seconde_diag(Out,In) :- 
+%        reverse(In, In2), 
+%        foldl(extract_element, In2, [], Out).
+
+%extract_element(L, L1, [H|L1]):- 
+%                length(L1, N1), 
+%                length(L2, N1), 
+%                append(L2, [H|_], L).
 
 
 
@@ -125,7 +135,7 @@ possible([   ], _).
 	de chaque emplacement de la liste, mais il ne
 	faut pas realiser l'unification.
 	*/
-unifiable(X,_) :- var(X).
+unifiable(X,_) :- var(X). %Vrai si X est libre
 unifiable(X,J) :- not(var(X)), J == X.
 
 	/**********************************
