@@ -74,9 +74,11 @@ aetoile(Pf, Pu, Qs) :-
 	suppress_min([[F,H,G],U], Pf, NewPf),
 	suppress([U,[F,H,G],Pere,A], Pu, NewPu),
 	(final_state(U)->
-		affiche_solution(Qs),
- 		nl, writeln(A),
-        	nl, writeln(U)
+		suppress([U, [FUFMin,HUFMin,Gu], PereUFMin, ActionUFMin], Pu, NewPu), %supp ds PU
+		insert([U, [FUFMin,HUFMin,Gu], PereUFMin, ActionUFMin],Qs,Q1),% AJout le bon elmt dans Q
+		affiche_solution(Q1,U)
+ 		%nl, writeln(A),
+        	%nl, writeln(U)
 	;	
 		expand(U,G,PuElements),
 		loop_successors(PuElements, Qs, NewPf, NewPu, NextIterPf, NexIterPu),
@@ -84,8 +86,22 @@ aetoile(Pf, Pu, Qs) :-
 		aetoile(NextIterPf, NexIterPu, NextIterQs)
 	).
 
-affiche_solution(Qs):-	
-	put_flat(Qs).
+affiche_solution(Q, U):-
+	belongs([U, _, nil, nil], Q),
+	writeln("Etape initiale : "),
+	writeln(U),
+	writeln("--------------------------------------------------------------------").
+affiche_solution(Q, U) :-
+	belongs([U, _, Pere, Action], Q),
+	affiche_solution(Q, Pere),
+	writeln("Action : "),
+	writeln(Action),
+	writeln("Etat : "),
+	writeln(U),
+	writeln("--------------------------------------------------------------------").
+
+%affiche_solution(Qs):-	
+%	put_flat(Qs).
 	
 	
 
